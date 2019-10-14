@@ -9,6 +9,7 @@ import (
 const (
 	InvalidRequest         ErrorType = "invalid_request"
 	MethodNotAllowed       ErrorType = "method_not_allowed"
+	NotFound               ErrorType = "not_found"
 	ServerError            ErrorType = "server_error"
 	UnsupportedContentType ErrorType = "unsupported_content_type"
 )
@@ -38,6 +39,17 @@ func NewMethodNotAllowed(cause error, description string, options ...Option) *St
 		statusCode: http.StatusMethodNotAllowed,
 		Err: &Err{
 			ErrorType:        MethodNotAllowed,
+			ErrorDescription: description,
+			Cause:            getAPIError(cause),
+		},
+	}
+}
+
+func NewNotFound(cause error, description string, options ...Option) *StatusError {
+	return &StatusError{
+		statusCode: http.StatusNotFound,
+		Err: &Err{
+			ErrorType:        NotFound,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
 		},
