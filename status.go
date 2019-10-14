@@ -15,12 +15,12 @@ const (
 
 type StatusError struct {
 	statusCode int
-	*Error
+	*Err
 }
 
 func (s *StatusError) WriteHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(s.statusCode)
-	if err := json.NewEncoder(w).Encode(s.Error); err != nil {
+	if err := json.NewEncoder(w).Encode(s.Err); err != nil {
 		log.Println("Failed to decode request")
 	}
 }
@@ -36,7 +36,7 @@ type Option interface {
 func NewMethodNotAllowed(cause error, description string, options ...Option) *StatusError {
 	return &StatusError{
 		statusCode: http.StatusMethodNotAllowed,
-		Error: &Error{
+		Err: &Err{
 			ErrorType:        MethodNotAllowed,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
@@ -47,7 +47,7 @@ func NewMethodNotAllowed(cause error, description string, options ...Option) *St
 func NewServerError(cause error, description string, options ...Option) *StatusError {
 	return &StatusError{
 		statusCode: http.StatusInternalServerError,
-		Error: &Error{
+		Err: &Err{
 			ErrorType:        ServerError,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
@@ -58,7 +58,7 @@ func NewServerError(cause error, description string, options ...Option) *StatusE
 func NewUnsupportedContentType(cause error, description string, options ...Option) *StatusError {
 	return &StatusError{
 		statusCode: http.StatusUnsupportedMediaType,
-		Error: &Error{
+		Err: &Err{
 			ErrorType:        UnsupportedContentType,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
@@ -69,7 +69,7 @@ func NewUnsupportedContentType(cause error, description string, options ...Optio
 func NewInvalidRequest(cause error, description string, options ...Option) *StatusError {
 	return &StatusError{
 		statusCode: http.StatusBadRequest,
-		Error: &Error{
+		Err: &Err{
 			ErrorType:        InvalidRequest,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
@@ -77,11 +77,11 @@ func NewInvalidRequest(cause error, description string, options ...Option) *Stat
 	}
 }
 
-func getAPIError(err error) *Error {
+func getAPIError(err error) *Err {
 	if err == nil {
 		return nil
 	}
-	apiErr, isErrorType := err.(*Error)
+	apiErr, isErrorType := err.(*Err)
 	if !isErrorType {
 		apiErr = NewUntypedError(err)
 	}

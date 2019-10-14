@@ -4,18 +4,18 @@ type ErrorType string
 
 const Untyped ErrorType = "untyped"
 
-type Error struct {
+type Err struct {
 	ErrorType        ErrorType              `json:"error"`
 	ErrorDescription string                 `json:"error_description,omitempty"`
 	ErrorData        map[string]interface{} `json:"error_data,omitempty"`
-	Cause            *Error                 `json:"error_cause,omitempty"`
+	Cause            *Err                   `json:"error_cause,omitempty"`
 }
 
-func (e *Error) Type() ErrorType {
+func (e *Err) Type() ErrorType {
 	return e.ErrorType
 }
 
-func (e *Error) Error() string {
+func (e *Err) Error() string {
 	return string(e.ErrorType)
 }
 
@@ -23,30 +23,30 @@ type typedError interface {
 	Type() ErrorType
 }
 
-func (e *Error) Is(err error) bool {
+func (e *Err) Is(err error) bool {
 	if apiErr, ok := err.(typedError); ok {
 		return e.ErrorType == apiErr.Type()
 	}
 	return false
 }
 
-func NewUntypedError(err error) *Error {
-	return &Error{
+func NewUntypedError(err error) *Err {
+	return &Err{
 		ErrorType:        Untyped,
 		ErrorDescription: err.Error(),
 	}
 }
 
-func NewTypedError(cause error, errorType ErrorType, description string) *Error {
-	var apiErr *Error
+func NewTypedError(cause error, errorType ErrorType, description string) *Err {
+	var apiErr *Err
 	if cause != nil {
 		var ok bool
-		apiErr, ok = cause.(*Error)
+		apiErr, ok = cause.(*Err)
 		if !ok {
 			apiErr = NewUntypedError(cause)
 		}
 	}
-	return &Error{
+	return &Err{
 		ErrorType:        errorType,
 		ErrorDescription: description,
 		Cause:            apiErr,
