@@ -11,6 +11,7 @@ const (
 	MethodNotAllowed       ErrorType = "method_not_allowed"
 	NotFound               ErrorType = "not_found"
 	ServerError            ErrorType = "server_error"
+	Unauthorized           ErrorType = "unauthorized"
 	UnsupportedContentType ErrorType = "unsupported_content_type"
 )
 
@@ -61,6 +62,17 @@ func NewServerError(cause error, description string, options ...Option) *StatusE
 		statusCode: http.StatusInternalServerError,
 		Err: &Err{
 			ErrorType:        ServerError,
+			ErrorDescription: description,
+			Cause:            getAPIError(cause),
+		},
+	}
+}
+
+func NewUnauthorized(cause error, description string, options ...Option) *StatusError {
+	return &StatusError{
+		statusCode: http.StatusUnauthorized,
+		Err: &Err{
+			ErrorType:        Unauthorized,
 			ErrorDescription: description,
 			Cause:            getAPIError(cause),
 		},
