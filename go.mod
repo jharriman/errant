@@ -1,4 +1,4 @@
-module github.com/jharriman/goerror
+module github.com/jharriman/errant
 
 go 1.13
 

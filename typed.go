@@ -1,4 +1,4 @@
-package goerror
+package errant
 
 type ErrorType string
 

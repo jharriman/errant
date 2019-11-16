@@ -1,6 +1,6 @@
 // This package wraps the go errors library, the default error library
 // does not have support for cleanly 'Wrap'-ing akin to github.com/pkg/errors.
-package goerror
+package errant
 
 import (
 	"errors"
