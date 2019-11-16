@@ -2,6 +2,14 @@ package goerror
 
 type ErrorType string
 
+func (et ErrorType) Type() ErrorType {
+	return et
+}
+
+func (et ErrorType) Error() string {
+	return string(et)
+}
+
 const Untyped ErrorType = "untyped"
 
 type Err struct {
