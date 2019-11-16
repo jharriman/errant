@@ -13,7 +13,10 @@ type wrapped struct {
 }
 
 func (w wrapped) Error() string {
-	return fmt.Sprintf("%s: %s", w.msg, w.cause.Error())
+	if w.cause != nil {
+		return fmt.Sprintf("%s: %s", w.msg, w.cause.Error())
+	}
+	return w.msg
 }
 
 func (w wrapped) Unwrap() error {
