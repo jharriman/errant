@@ -1,5 +1,7 @@
 package errant
 
+// An ErrorType provides a fast way to label errors and compare them
+// using error.As or error.Is.
 type ErrorType string
 
 func (et ErrorType) Type() ErrorType {
@@ -25,6 +27,10 @@ func (e *Err) Type() ErrorType {
 
 func (e *Err) Error() string {
 	return string(e.ErrorType)
+}
+
+func (e *Err) Unwrap() error {
+	return e.Cause
 }
 
 type typedError interface {

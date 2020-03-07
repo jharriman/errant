@@ -1,5 +1,3 @@
-// This package wraps the go errors library, the default error library
-// does not have support for cleanly 'Wrap'-ing akin to github.com/pkg/errors.
 package errant
 
 import (
@@ -7,6 +5,11 @@ import (
 	"fmt"
 )
 
+// While go adopted many great features of github.com/pkg/errors, they chose
+// not to retain the concrete implementation of a 'wrapped' struct.
+//
+// The struct provided here allows you to use Wrap and Unwrap without
+// writing your own implementation.
 type wrapped struct {
 	msg   string
 	cause error
@@ -45,4 +48,8 @@ func As(err error, target interface{}) bool {
 
 func New(text string) error {
 	return errors.New(text)
+}
+
+func Errorf(format string, args ...interface{}) error {
+	return fmt.Errorf(format, args...)
 }

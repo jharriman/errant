@@ -15,6 +15,8 @@ const (
 	UnsupportedContentType ErrorType = "unsupported_content_type"
 )
 
+// A StatusError provides a function for writing an error to HTTP
+// with a consistent JSON format and an http status code.
 type StatusError struct {
 	statusCode int
 	*Err
